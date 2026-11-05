@@ -2,6 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+// Nuestro primer commit
 package Modelo;
 
 /**
@@ -30,6 +31,7 @@ public class Vela {
     public int getCantidad() {
         return cantidad;
     }
+    
     public abstract double calcularPrecio();
     
 }
