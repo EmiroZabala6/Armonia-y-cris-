@@ -9,7 +9,7 @@ package Modelo;
  *
  * @author andre
  */
-public class Vela {
+public abstract class Vela {
     private String nombre;
     private double precio;
     private int cantidad;
