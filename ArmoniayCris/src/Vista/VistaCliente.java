@@ -8,6 +8,6 @@ package Vista;
  *
  * @author andre
  */
-public class VistaCLiente {
+public class VistaCliente {
     
 }
