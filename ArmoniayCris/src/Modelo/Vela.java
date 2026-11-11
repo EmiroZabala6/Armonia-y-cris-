@@ -30,6 +30,20 @@ public abstract class Vela {
     public int getCantidad() {
         return cantidad;
     }
-    public abstract double calcularPrecio();
     
-}
+    
+    
+   public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setPrecio(double precio) { this.precio = precio; }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
+
+    public abstract double calcularPrecio();
+
+    @Override
+    public String toString() {
+        return nombre + " | Precio: $" + precio + " | Cant: " + cantidad;
+    }
+} 
+
+
+
