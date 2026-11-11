@@ -9,5 +9,10 @@ package Modelo;
  * @author andre
  */
 public class Cliente {
+    private String id;
+    private String Nombre;
+    private String telefono;
+    private String correo;
+     
     
 }
