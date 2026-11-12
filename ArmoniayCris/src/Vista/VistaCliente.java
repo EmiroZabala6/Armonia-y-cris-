@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import Controlador.ControladorCliente;
 
 /**
  *
@@ -32,13 +33,21 @@ public class VistaCliente extends javax.swing.JPanel {
     private JTextField txtTelefono;
     private JButton btnGuardar;
     
+    private ControladorCliente controlador; //conectar con el controlador
+    
     /**
      * Creates new form VistaCliente
      */
     public VistaCliente(DefaultTableModel clientes) {
         this.clientes = clientes;
         initComponents();
+        controlador = new ControladorCliente(clientes);
         construirInterfaz();
+        //cargar datos de clientes
+        String error = controlador.cargarClientes();
+        if (error != null) {
+            aviso(error);
+        }
     }
 
     /**
@@ -83,30 +92,30 @@ public class VistaCliente extends javax.swing.JPanel {
         btnGuardar.addActionListener(e -> guardarCliente());
         return panel;
     }
-    
+    // controlador
     private void guardarCliente() {
-        String nombre = txtNombre.getText().trim();
-        String telefono = txtTelefono.getText().trim();
- 
-        // HU3 - criterio 1
-        if (nombre.isEmpty()) {
-            aviso("El nombre del cliente no puede estar vacío.");
-            return;
-        }
-        if (telefono.isEmpty()) {
-            aviso("El teléfono no puede estar vacío.");
-            return;
-        }
-        if (!telefono.matches("\\d+")) {
-            aviso("El teléfono solo puede contener números.");
-            return;
-        }
-        
-        clientes.addRow(new Object[]{nombre, telefono});
-        txtNombre.setText("");
-        txtTelefono.setText("");
-        txtNombre.requestFocus();
+
+    String nombre = txtNombre.getText();
+    String telefono = txtTelefono.getText();
+
+    String error = controlador.guardarCliente(nombre, telefono);
+
+    if (error != null) {
+        aviso(error);
+        return;
     }
+
+    JOptionPane.showMessageDialog(
+        this,
+        "Cliente guardado correctamente.",
+        "Registro exitoso",
+        JOptionPane.INFORMATION_MESSAGE
+    );
+
+    txtNombre.setText("");
+    txtTelefono.setText("");
+    txtNombre.requestFocus();
+}
     
     private void aviso(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje, "Datos incorrectos", JOptionPane.WARNING_MESSAGE);
