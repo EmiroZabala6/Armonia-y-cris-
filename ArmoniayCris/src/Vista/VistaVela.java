@@ -20,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import Controlador.ControladorVela;
 
 /**
  *
@@ -46,13 +47,22 @@ public class VistaVela extends javax.swing.JPanel {
     private JButton btnGuardar;
     private JTable tabla;
     
+    private ControladorVela controlador;
+    
     /**
      * Creates new form VistaVela
      */
     public VistaVela(DefaultTableModel inventario) {
         this.inventario = inventario;
         initComponents();
+        controlador = new ControladorVela(inventario);
         construirInterfaz();
+        
+        String error = controlador.cargarVelas();
+
+    if (error != null) {
+        aviso(error);
+    }
     }
 
     /**
@@ -134,42 +144,35 @@ public class VistaVela extends javax.swing.JPanel {
     }
     
     private void guardarVela() {
-        String nombre = txtNombre.getText().trim();
-        String tipo = (String) cmbTipo.getSelectedItem();
-        String extra = txtExtra.getText().trim();
- 
-        if (nombre.isEmpty()) {
-            aviso("El nombre de la vela no puede estar vacío.");
-            return;
-        }
-        if (extra.isEmpty()) {
-            aviso("Escribe el " + (cmbTipo.getSelectedIndex() == 0 ? "aroma" : "diseño") + " de la vela.");
-            return;
-        }
-        if (existe(nombre)) {
-            aviso("Ya existe una vela con ese nombre.");
-            return;
-        }
- 
-        try {
-            double precio = Double.parseDouble(txtPrecio.getText().trim());
-            int cantidad = Integer.parseInt(txtCantidad.getText().trim());
-            if (Double.isNaN(precio) || Double.isInfinite(precio)) {
-                throw new NumberFormatException();
-            }
-            // HU1 - criterio 1: negativos no se guardan
-            if (precio < 0 || cantidad < 0) {
-                aviso("El precio y la cantidad no pueden ser negativos.");
-                return;
-            }
-            
-            inventario.addRow(new Object[]{nombre, tipo, extra, precio, cantidad, estadoDe(cantidad)});
-            limpiarCampos();
-        } catch (NumberFormatException ex) {
-            // HU1 - criterio 1: letras en el precio o la cantidad
-            aviso("El precio y la cantidad deben ser números (el precio con punto decimal, la cantidad entera).");
-        }
+
+    String nombre = txtNombre.getText();
+    boolean aromatica = cmbTipo.getSelectedIndex() == 0;
+    String extra = txtExtra.getText();
+    String precio = txtPrecio.getText();
+    String cantidad = txtCantidad.getText();
+
+    String error = controlador.guardarVela(
+            nombre,
+            aromatica,
+            extra,
+            precio,
+            cantidad
+    );
+
+    if (error != null) {
+        aviso(error);
+        return;
     }
+
+    JOptionPane.showMessageDialog(
+            this,
+            "Vela guardada correctamente.",
+            "Registro exitoso",
+            JOptionPane.INFORMATION_MESSAGE
+    );
+
+    limpiarCampos();
+}
  
     private boolean existe(String nombre) {
         for (int i = 0; i < inventario.getRowCount(); i++) {
