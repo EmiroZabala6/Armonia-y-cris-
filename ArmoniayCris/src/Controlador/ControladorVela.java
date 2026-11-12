@@ -212,5 +212,50 @@ public class ControladorVela {
     // Determinar el estado del inventario
     private String estadoDe(int cantidad) {
         return cantidad == 0 ? "AGOTADA" : "Disponible";
+    }   
+    
+    
+public String actualizarCantidadArchivo() {
+
+    try {
+        Files.createDirectories(archivoVelas.getParent());
+
+        try (BufferedWriter escritor = Files.newBufferedWriter(
+                archivoVelas,
+                StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING)) {
+
+            for (int i = 0; i < inventario.getRowCount(); i++) {
+
+                String nombre = inventario.getValueAt(i, 0).toString();
+
+                String tipo = inventario.getValueAt(i, 1).toString()
+                        .equalsIgnoreCase("Aromatica") ? "A" : "D";
+
+                String extra = inventario.getValueAt(i, 2).toString();
+
+                double precio = Double.parseDouble(
+                        inventario.getValueAt(i, 3).toString());
+
+                int cantidad = Integer.parseInt(
+                        inventario.getValueAt(i, 4).toString());
+
+                escritor.write(tipo + "\t"
+                        + nombre + "\t"
+                        + extra + "\t"
+                        + precio + "\t"
+                        + cantidad);
+
+                escritor.newLine();
+            }
+        }
+
+        return null;
+
+    } catch (IOException | NumberFormatException e) {
+        return "Error al actualizar el archivo de velas: " + e.getMessage();
     }
+}
+
 }

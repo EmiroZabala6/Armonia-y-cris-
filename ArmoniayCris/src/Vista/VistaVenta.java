@@ -23,6 +23,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import Controlador.*;
+import java.io.IOException;
 
 /**
  *
@@ -33,6 +35,9 @@ public class VistaVenta extends javax.swing.JPanel {
     public static final String[] COLUMNAS = {"Fecha", "Cliente", "Detalle", "Total"};
     private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final DateTimeFormatter SOLO_DIA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+       
+    private final ControladorVenta controladorVenta = new ControladorVenta();
+    private final ControladorVela controladorVela;
     
     private static class ItemCarrito {
         final int fila;          // fila de la vela en el inventario
@@ -51,7 +56,7 @@ public class VistaVenta extends javax.swing.JPanel {
             return precio * cantidad;
         }
     }
- 
+     
     private final DefaultTableModel inventario;
     private final DefaultTableModel clientes;
     private final DefaultTableModel ventas;
@@ -67,13 +72,32 @@ public class VistaVenta extends javax.swing.JPanel {
     private DefaultTableModel modeloHistorial;
     private JLabel lblTotalDia;
     
-    public VistaVenta(DefaultTableModel inventario, DefaultTableModel clientes, DefaultTableModel ventas) {
-        this.inventario = inventario;
-        this.clientes = clientes;
-        this.ventas = ventas;
-        initComponents();
-        construirInterfaz();
+    
+public VistaVenta(DefaultTableModel inventario,
+                  DefaultTableModel clientes,
+                  DefaultTableModel ventas) {
+
+    this.inventario = inventario;
+    this.clientes = clientes;
+    this.ventas = ventas;
+
+    this.controladorVela = new ControladorVela(inventario);
+
+    initComponents();
+
+    try {
+        controladorVenta.cargarVentas(this.ventas);
+
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Error al cargar las ventas: " + ex.getMessage()
+        );
     }
+
+    construirInterfaz();
+}
+
     
     /**
      * Creates new form VistaVenta
@@ -226,9 +250,35 @@ public class VistaVenta extends javax.swing.JPanel {
             }
             detalle.append(item.nombre).append(" x").append(item.cantidad);
         }
+        // Actualizar las cantidades en el archivo velas.txt
+String resultado = controladorVela.actualizarCantidadArchivo();
+
+if (resultado != null) {
+    JOptionPane.showMessageDialog(
+            this,
+            resultado,
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+    );
+    return;
+}
         String cliente = (String) clientes.getValueAt(filaCliente, VistaCliente.COL_NOMBRE);
         ventas.addRow(new Object[]{LocalDateTime.now().format(FECHA), cliente, detalle.toString(), total});
- 
+        // Conectar con el controlador para guardar las ventas
+        try {
+
+             controladorVenta.guardarVentas(ventas);
+
+        } catch (IOException ex) {
+
+            JOptionPane.showMessageDialog(
+            this,
+            "Error al guardar las ventas: " + ex.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+            );
+        }
+        
         JOptionPane.showMessageDialog(this,
                 "Venta registrada.\nTotal: " + VistaVela.moneda(total),
                 "Venta", JOptionPane.INFORMATION_MESSAGE);
