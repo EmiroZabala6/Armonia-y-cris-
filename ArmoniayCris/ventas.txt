@@ -1,0 +1,3 @@
+12/11/2026 00:32|Juan pablo|Vela Prueba x2; Vela Prueba x2|48000.0
+12/11/2026 00:40|Juan pablo|Vela Prueba x2|24000.0
+12/11/2026 01:05|Juan pablo|Vela Prueba x2|24000.0

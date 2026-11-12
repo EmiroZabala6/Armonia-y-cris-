@@ -88,16 +88,17 @@ public class VistaPrincipal extends javax.swing.JPanel {
         btnClientes.addActionListener(e -> cartas.show(contenedor, CLIENTES));
         btnVentas.addActionListener(e -> cartas.show(contenedor, VENTAS));
  
-        cargarDatosDePrueba(); // BORRA esta línea cuando ya tengas Modelo y Controlador
+        //cargarDatosDePrueba(); // BORRA esta línea cuando ya tengas Modelo y Controlador
     }
-    
+    //controlador
+    /*
     private void cargarDatosDePrueba() {
         inventario.addRow(new Object[]{"Lavanda", "Aromática", "lavanda", 12000.0, 10, VistaVela.estadoDe(10)});
         inventario.addRow(new Object[]{"Vainilla", "Aromática", "vainilla", 15000.0, 5, VistaVela.estadoDe(5)});
         inventario.addRow(new Object[]{"Rosa", "Decorativa", "flor", 8000.0, 0, VistaVela.estadoDe(0)});
         clientes.addRow(new Object[]{"Ana Pérez", "3001234567"});
         clientes.addRow(new Object[]{"Carlos Ruiz", "3109876543"});
-    }
+    }*/
     
     private static DefaultTableModel crearModelo(String[] columnas) {
         return new DefaultTableModel(columnas, 0) {
