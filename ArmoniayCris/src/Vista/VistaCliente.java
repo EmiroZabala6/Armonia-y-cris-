@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author julif
+ * @author julif.
  */
 public class VistaCliente extends javax.swing.JPanel {
 
